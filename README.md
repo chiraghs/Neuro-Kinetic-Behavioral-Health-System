@@ -30,33 +30,89 @@ The **Neuro-Kinetic Behavioral Health System** bridges physiological readiness w
 
 ![System Architecture](architecture_diagram.png)
 
+### Mermaid Architecture Diagram
+
+```mermaid
+flowchart TB
+    subgraph HARDWARE["1. Hardware & Sensing Layer"]
+        SENS1["Forehead Biosensor Array\n(Optical PPG for HRV + Dry EEG)"]
+        SENS2["Dual Kinematic IMU Pods\n(9-Axis Accel/Gyro + Haptics)"]
+        DISP["Display Interfaces\n(Meta Quest / OpenXR / 2D Web)"]
+    end
+
+    subgraph FRONTEND["2. Hosted Frontend Service (React 19 / Three.js / WebXR)"]
+        BLE["Web Bluetooth API (BLE 5.0) Engine"]
+        WEBXR["3D Bio-Responsive Engine (Three.js)\n(Dynamic Shaders & Binaural Audio)"]
+        SIM["Synthetic Sensor Simulator\n(Zero-Install Judge Testing)"]
+        REPORTS["Analytics & Web App Reports Dashboard\n(Habit Retention, ROM & Autonomic Trends)"]
+        IDB[("Client Local Storage (IndexedDB)\n[AES-256 Encrypted Session History]")]
+    end
+
+    subgraph BACKEND["3. Backend Microservice (FastAPI / Python 3.12)"]
+        API["FastAPI Core Gateway\n(REST & WebSockets)"]
+        subgraph ENGINE["Adaptive Somatic Engine"]
+            ALI["Allostatic Load Index Calculator\n(Nervous Stress vs Physical Fatigue)"]
+            GOV["Goal Governor Algorithm\n(Kinetic Exergames vs Restorative Resets)"]
+            SHIELD["Zero-Drop Setback Resilience\n(Streak Shield & 2-Min Reset)"]
+        end
+        ANALYTICS["Cohort Analytics & Report Aggregator\n(Clinician & FHIR/JSON Export)"]
+    end
+
+    subgraph DATABASE["4. Database & Storage Layer"]
+        PG[("PostgreSQL Database\n(User Profiles, Streaks & Anonymized Telemetry)")]
+    end
+
+    %% Telemetry & Control Connections
+    SENS1 -->|"BLE 5.0 Streams"| BLE
+    SENS2 -->|"Kinematic Vectors"| BLE
+    BLE --> WEBXR
+    SIM -.->|"Simulated Stress / Readiness"| WEBXR
+    WEBXR --> REPORTS
+
+    WEBXR <-->|"Bi-directional WSS / REST"| API
+    REPORTS <-->|"Query Trends & Reports"| API
+
+    API --> ALI
+    ALI --> GOV
+    GOV --> SHIELD
+    SHIELD -->|"Dynamic Routine Updates"| API
+
+    API --> ANALYTICS
+    ANALYTICS <-->|"Read / Write Metrics"| PG
+
+    FRONTEND -.->|"Offline Persistence"| IDB
+```
+
 ### Architecture Highlights
-* **Decoupled Frontend-Backend Model:** Hosted interactive client communicating via bi-directional WebSockets and REST APIs with a high-performance Python backend.
-* **Zero-Install Evaluation:** Built-in "Continue as Guest" mode with an interactive **Synthetic Sensor Simulator** allowing users and evaluators to test bio-adaptive features without physical hardware.
+* **Decoupled Frontend-Backend Model:** Hosted interactive client (`React 19 / Three.js / WebXR`) communicating via bi-directional WebSockets and REST APIs with a high-performance Python (`FastAPI`) backend.
+* **Database & Persistence:** Relational **PostgreSQL** database maintaining user accounts, habit history, and longitudinal telemetry aggregates, backed by client-side **IndexedDB (AES-256)** for offline resilience.
+* **Analytics & Web App Reports:** Comprehensive dashboards measuring 60-day habit retention, Setback Recovery Velocity (SRV), Heart Rate Variability (HRV) autonomic gains, and joint mobility metrics with clinician export support.
+* **Zero-Install Evaluation:** Built-in "Continue as Guest" mode with an interactive **Synthetic Sensor Simulator** allowing evaluators to test bio-adaptive features without physical hardware.
 
 ### 1. Hardware Layer
 * **Forehead/Headset Biosensor Array (OpenBCI-compatible / PPG):**
   * **Frontal EEG:** Measures cognitive load and relaxation indices (Alpha/Theta power bands).
-  * **Optical PPG:** Continuously tracks Heart Rate (HR) and Heart Rate Variability (HRV / RMSSD) as an indicator of autonomic nervous system readiness.
+  * **Optical PPG (MAX30102):** Continuously tracks Heart Rate (HR) and Heart Rate Variability (HRV / RMSSD) as an indicator of autonomic nervous system readiness.
 * **Wearable Kinematic IMUs (SlimeVR / BNO085-based):**
   * Wireless 9-axis Inertial Measurement Units strapped to limbs/torso for accurate posture, mobility, and movement tracking without external optical cameras.
   * Embedded coin vibration motors for subtle haptic guidance.
 * **Display / Immersion:**
-  * OpenXR / SteamVR compliant VR or Mixed Reality (MR) headset.
+  * OpenXR / SteamVR compliant VR or Mixed Reality (MR) headset, plus standard 2D web fallback.
 
-### 2. Software Layer
+### 2. Software & Database Layer
 * **Hosted Frontend Service (`React 19 / Three.js / WebXR`):**
   * Direct browser-to-hardware communication using the **Web Bluetooth API (BLE)**.
   * Real-time 3D Somatic Biofeedback scene adjusting visual lighting, particle flows, and spatial soundscapes based on live autonomic coherence.
+  * **Analytics & Web App Reports:** Interactive charts tracking habit streaks, mobility progress, and recovery indicators.
   * Interactive **Synthetic Sensor Simulator** control panel for zero-install judge evaluation.
 * **Backend Microservice (`FastAPI / Python 3.12`):**
   * Asynchronous REST and WebSocket pipeline ingesting multi-modal sensor telemetry.
   * **Adaptive Somatic Engine:** Calculates real-time **Allostatic Load Index** and dynamically scales between active movement exergames and parasympathetic vagus resets.
   * **Zero-Drop Habit Governor:** Non-punitive streak shielding and baseline calibration against rolling 7-day personal history.
-* **Immersive VR Environment (Unity / Unreal Engine / WebXR):**
-  * Procedural environment adjusting lighting, audio frequencies, and interaction pacing based on live biometrics.
-* **Mobile / Web Companion Dashboard:**
-  * Long-term trend analytics, habit resilience metrics, and schedule synchronization.
+  * **Analytics & Reporting Pipeline:** Processes cohort-level adherence benchmarks and clinician exports.
+* **Database Layer (`PostgreSQL`):**
+  * ACID-compliant storage for user authentication, personalized baselines, habit logs, and anonymized physiological metrics.
+  * Encrypted at rest (TLS 1.3 / AES-256) ensuring full alignment with GDPR and HIPAA standards.
 
 ---
 
