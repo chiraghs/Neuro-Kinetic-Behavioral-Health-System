@@ -28,6 +28,12 @@ The **Neuro-Kinetic Behavioral Health System** bridges physiological readiness w
 
 ## 🛠️ System Architecture: Hardware + Software
 
+![System Architecture](architecture_diagram.png)
+
+### Architecture Highlights
+* **Decoupled Frontend-Backend Model:** Hosted interactive client communicating via bi-directional WebSockets and REST APIs with a high-performance Python backend.
+* **Zero-Install Evaluation:** Built-in "Continue as Guest" mode with an interactive **Synthetic Sensor Simulator** allowing users and evaluators to test bio-adaptive features without physical hardware.
+
 ### 1. Hardware Layer
 * **Forehead/Headset Biosensor Array (OpenBCI-compatible / PPG):**
   * **Frontal EEG:** Measures cognitive load and relaxation indices (Alpha/Theta power bands).
@@ -39,11 +45,14 @@ The **Neuro-Kinetic Behavioral Health System** bridges physiological readiness w
   * OpenXR / SteamVR compliant VR or Mixed Reality (MR) headset.
 
 ### 2. Software Layer
-* **Sensor Fusion Engine:** Real-time ingestion and normalization of EEG signals, HRV autonomic scores, and IMU kinematic orientation vectors.
-* **Adaptive Somatic Engine:** An algorithmic governor that maps user readiness against habit targets:
-  * *High Readiness + Balanced Stress* $\rightarrow$ Active Kinetic Game (Mobility & Cardio).
-  * *High Stress + Low Readiness* $\rightarrow$ Somatic Flow (Stretching, Vagus nerve breathing, Calm Audio-Visuals).
-  * *Returning After Absence* $\rightarrow$ Restorative 2-Minute Reset (Psychological Safety onboarding).
+* **Hosted Frontend Service (`React 19 / Three.js / WebXR`):**
+  * Direct browser-to-hardware communication using the **Web Bluetooth API (BLE)**.
+  * Real-time 3D Somatic Biofeedback scene adjusting visual lighting, particle flows, and spatial soundscapes based on live autonomic coherence.
+  * Interactive **Synthetic Sensor Simulator** control panel for zero-install judge evaluation.
+* **Backend Microservice (`FastAPI / Python 3.12`):**
+  * Asynchronous REST and WebSocket pipeline ingesting multi-modal sensor telemetry.
+  * **Adaptive Somatic Engine:** Calculates real-time **Allostatic Load Index** and dynamically scales between active movement exergames and parasympathetic vagus resets.
+  * **Zero-Drop Habit Governor:** Non-punitive streak shielding and baseline calibration against rolling 7-day personal history.
 * **Immersive VR Environment (Unity / Unreal Engine / WebXR):**
   * Procedural environment adjusting lighting, audio frequencies, and interaction pacing based on live biometrics.
 * **Mobile / Web Companion Dashboard:**
