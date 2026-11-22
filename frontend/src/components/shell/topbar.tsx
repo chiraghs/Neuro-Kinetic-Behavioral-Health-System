@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, Glasses, Activity, Heart, Shield, ChevronDown, Check, RefreshCw } from "lucide-react";
+import { Sparkles, Glasses, Activity, Heart, Shield, ChevronDown, Check, Zap, Cpu } from "lucide-react";
 import { useTelemetry, PresetMode } from "@/store/telemetry-store";
 import { cn } from "@/lib/cn";
+import { Button, Badge, type Tone } from "../ui/primitives";
 
 export function Topbar() {
   const pathname = usePathname();
@@ -13,7 +14,6 @@ export function Topbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -24,12 +24,12 @@ export function Topbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const getStatusColor = () => {
+  const getBadgeTone = (): Tone => {
     switch (telemetry.autonomicState) {
-      case "HIGH_READINESS": return "border-emerald-500/40 bg-emerald-500/10 text-emerald-400";
-      case "BALANCED": return "border-cyan-500/40 bg-cyan-500/10 text-cyan-400";
-      case "ACUTE_STRESS": return "border-amber-500/40 bg-amber-500/10 text-amber-400";
-      case "CHRONIC_FATIGUE": return "border-purple-500/40 bg-purple-500/10 text-purple-400";
+      case "HIGH_READINESS": return "healthy";
+      case "BALANCED": return "accent";
+      case "ACUTE_STRESS": return "warning";
+      case "CHRONIC_FATIGUE": return "agent";
     }
   };
 
@@ -41,33 +41,31 @@ export function Topbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-slate-800/80 bg-slate-950/80 px-6 backdrop-blur-xl">
-      {/* Brand & Mode */}
+    <header className="sticky top-0 z-50 flex h-14 w-full items-center justify-between border-b border-line bg-shell px-5 backdrop-blur-xl">
+      {/* Brand & Tabs */}
       <div className="flex items-center gap-6">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/20 font-bold text-lg">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white shadow-[0_0_12px_rgba(76,141,255,0.4)] font-bold text-sm tracking-wider">
             S
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold tracking-tight text-white text-base">SomaSync VR</span>
-              <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-[10px] font-semibold text-cyan-300 border border-cyan-500/30">
-                MVP
-              </span>
+              <span className="font-semibold tracking-tight text-ink text-sm">SomaSync VR</span>
+              <Badge tone="accent">MVP</Badge>
             </div>
-            <p className="text-[11px] text-slate-400">Neuro-Kinetic Behavioral Health</p>
+            <p className="text-[10px] text-muted leading-none mt-0.5">Neuro-Kinetic Behavioral Health</p>
           </div>
         </Link>
 
         {/* Navigation Tabs */}
-        <nav className="hidden md:flex items-center gap-1 rounded-lg bg-slate-900/60 p-1 border border-slate-800">
+        <nav className="hidden md:flex items-center gap-0.5 rounded-lg border border-line bg-surface p-0.5">
           <Link
             href="/"
             className={cn(
-              "rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all",
+              "rounded-md px-3 py-1 text-xs font-medium transition-colors",
               pathname === "/"
-                ? "bg-slate-800 text-white shadow"
-                : "text-slate-400 hover:text-white"
+                ? "bg-surface-3 text-ink shadow-sm"
+                : "text-muted hover:text-ink hover:bg-surface-2"
             )}
           >
             3D Somatic Session
@@ -75,10 +73,10 @@ export function Topbar() {
           <Link
             href="/dashboard"
             className={cn(
-              "rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all",
+              "rounded-md px-3 py-1 text-xs font-medium transition-colors",
               pathname === "/dashboard"
-                ? "bg-slate-800 text-white shadow"
-                : "text-slate-400 hover:text-white"
+                ? "bg-surface-3 text-ink shadow-sm"
+                : "text-muted hover:text-ink hover:bg-surface-2"
             )}
           >
             Habit Resilience Dashboard
@@ -88,44 +86,48 @@ export function Topbar() {
 
       {/* Center Live Biometric Pill */}
       <div className="hidden lg:flex items-center gap-3">
-        <div className={cn("flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-medium backdrop-blur-md", getStatusColor())}>
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
-          </span>
-          <span className="font-semibold">{telemetry.autonomicState.replace("_", " ")}</span>
-          <span className="opacity-40">•</span>
-          <span>HRV: {telemetry.hrvRmssd}ms</span>
-          <span className="opacity-40">•</span>
-          <span>HR: {telemetry.heartRate} bpm</span>
+        <div className="flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium">
+          <Badge tone={getBadgeTone()}>
+            <span className="relative flex h-1.5 w-1.5 mr-0.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-current"></span>
+            </span>
+            {telemetry.autonomicState.replace("_", " ")}
+          </Badge>
+          <span className="text-muted">•</span>
+          <span className="text-ink font-mono text-[11px]">HRV {telemetry.hrvRmssd}ms</span>
+          <span className="text-muted">•</span>
+          <span className="text-ink font-mono text-[11px]">HR {telemetry.heartRate} bpm</span>
         </div>
 
         {telemetry.streakShieldActive && (
-          <div className="flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-300">
-            <Shield className="h-3.5 w-3.5 text-amber-400" />
+          <Badge tone="warning">
+            <Shield className="h-3 w-3" />
             <span>Streak-Shield Active</span>
-          </div>
+          </Badge>
         )}
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         {/* Synthetic Sensor Simulator (Demo Controls) */}
         <div className="relative" ref={dropdownRef}>
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-2 rounded-lg border border-cyan-500/40 bg-cyan-950/40 px-3.5 py-1.5 text-xs font-semibold text-cyan-200 transition-all hover:bg-cyan-900/50 hover:border-cyan-400 shadow-sm shadow-cyan-500/10"
+            className="text-accent-ink border-accent/40 bg-accent-soft hover:bg-accent-soft/80"
           >
-            <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+            <Sparkles className="h-3.5 w-3.5 text-accent" />
             <span>Demo Controls</span>
-            <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-          </button>
+            <ChevronDown className="h-3 w-3 opacity-70" />
+          </Button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-80 rounded-xl border border-slate-700 bg-slate-900/95 p-2 shadow-2xl backdrop-blur-2xl z-50">
-              <div className="px-3 py-2 border-b border-slate-800">
-                <p className="text-xs font-bold text-white">Judge & Evaluator Simulator</p>
-                <p className="text-[11px] text-slate-400">Simulate physiological states without hardware</p>
+            <div className="absolute right-0 mt-2 w-84 rounded-xl border border-line-strong bg-shell p-2 shadow-2xl backdrop-blur-2xl z-50 animate-fade-in">
+              <div className="px-3 py-2 border-b border-line">
+                <p className="text-xs font-semibold text-ink">Judge & Evaluator Simulator</p>
+                <p className="text-[11px] text-muted">Simulate physiological states without hardware</p>
               </div>
               <div className="py-1">
                 {presetLabels.map((p) => (
@@ -136,19 +138,19 @@ export function Topbar() {
                       setDropdownOpen(false);
                     }}
                     className={cn(
-                      "flex w-full items-start gap-3 rounded-lg px-3 py-2 text-left transition-all",
+                      "flex w-full items-start gap-3 rounded-lg px-3 py-2 text-left transition-colors",
                       telemetry.activePreset === p.id
-                        ? "bg-cyan-500/15 border border-cyan-500/30 text-white"
-                        : "hover:bg-slate-800 text-slate-300"
+                        ? "bg-surface-2 border border-accent/40 text-ink"
+                        : "hover:bg-surface-2 text-ink-2"
                     )}
                   >
-                    <span className="text-base mt-0.5">{p.icon}</span>
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold leading-tight">{p.label}</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">{p.desc}</p>
+                    <span className="text-sm mt-0.5">{p.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-ink leading-tight">{p.label}</p>
+                      <p className="text-[11px] text-muted mt-0.5 truncate">{p.desc}</p>
                     </div>
                     {telemetry.activePreset === p.id && (
-                      <Check className="h-4 w-4 text-cyan-400 mt-1 shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-accent mt-1 shrink-0" />
                     )}
                   </button>
                 ))}
@@ -158,13 +160,14 @@ export function Topbar() {
         </div>
 
         {/* Enter VR Button */}
-        <button
+        <Button
+          variant="primary"
+          size="sm"
           onClick={() => alert("WebXR Session: Meta Quest / OpenXR runtime detected. Launching full immersive session...")}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-indigo-500/20 hover:brightness-110 transition-all"
         >
           <Glasses className="h-4 w-4" />
           <span className="hidden sm:inline">Enter VR</span>
-        </button>
+        </Button>
       </div>
     </header>
   );

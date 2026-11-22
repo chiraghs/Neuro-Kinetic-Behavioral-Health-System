@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Topbar } from "@/components/shell/topbar";
 import { Shield, Activity, Heart, Calendar, Download, CheckCircle2, TrendingUp, Sparkles, Award } from "lucide-react";
+import { Card, CardHeader, CardBody, Badge, Button } from "@/components/ui/primitives";
 
 export default function DashboardPage() {
   const [downloading, setDownloading] = useState(false);
@@ -45,146 +46,153 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen w-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen w-screen bg-canvas text-ink flex flex-col">
       <Topbar />
 
       <main className="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
         {/* Header Title & FHIR Export */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-line">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
-              <span>Habit Resilience & Autonomic Recovery</span>
-              <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-400 border border-emerald-500/30">
-                Active Streak: 18 Days
-              </span>
-            </h1>
-            <p className="text-xs text-slate-400 mt-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-lg font-bold tracking-tight text-ink">Habit Resilience & Autonomic Recovery</h1>
+              <Badge tone="healthy">Active Streak: 18 Days</Badge>
+            </div>
+            <p className="text-xs text-muted mt-1">
               Longitudinal tracking designed around biological empathy and non-punitive setback recovery.
             </p>
           </div>
 
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={handleExportFhir}
             disabled={downloading}
-            className="flex items-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 px-4 py-2 text-xs font-semibold text-white border border-slate-700 transition"
+            className="gap-2"
           >
-            <Download className="h-4 w-4 text-cyan-400" />
+            <Download className="h-4 w-4 text-accent" />
             <span>{downloading ? "Exporting FHIR..." : "Export Clinical FHIR Summary"}</span>
-          </button>
+          </Button>
         </div>
 
         {/* 4 Top KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>60-Day Adherence</span>
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-white mt-2">98.3%</p>
-            <p className="text-[11px] text-emerald-400 mt-1">vs 18% industry standard</p>
-          </div>
+          <Card>
+            <CardBody className="p-4">
+              <div className="flex items-center justify-between text-muted text-xs">
+                <span>60-Day Adherence</span>
+                <CheckCircle2 className="h-4 w-4 text-healthy" />
+              </div>
+              <p className="text-2xl font-bold font-mono text-ink mt-2">98.3%</p>
+              <p className="text-[11px] text-healthy-ink mt-1">vs 18% industry standard</p>
+            </CardBody>
+          </Card>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>Streak-Shield Saves</span>
-              <Shield className="h-4 w-4 text-amber-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-white mt-2">8 Days</p>
-            <p className="text-[11px] text-amber-300 mt-1">Rescued via Restorative Resets</p>
-          </div>
+          <Card>
+            <CardBody className="p-4">
+              <div className="flex items-center justify-between text-muted text-xs">
+                <span>Streak-Shield Saves</span>
+                <Shield className="h-4 w-4 text-warning" />
+              </div>
+              <p className="text-2xl font-bold font-mono text-ink mt-2">8 Days</p>
+              <p className="text-[11px] text-warning-ink mt-1">Rescued via Restorative Resets</p>
+            </CardBody>
+          </Card>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>Baseline HRV Gain</span>
-              <Heart className="h-4 w-4 text-cyan-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-white mt-2">+19.4%</p>
-            <p className="text-[11px] text-cyan-300 mt-1">Enhanced parasympathetic tone</p>
-          </div>
+          <Card>
+            <CardBody className="p-4">
+              <div className="flex items-center justify-between text-muted text-xs">
+                <span>Baseline HRV Gain</span>
+                <Heart className="h-4 w-4 text-accent" />
+              </div>
+              <p className="text-2xl font-bold font-mono text-ink mt-2">+19.4%</p>
+              <p className="text-[11px] text-accent-ink mt-1">Enhanced parasympathetic tone</p>
+            </CardBody>
+          </Card>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>Recovery Velocity</span>
-              <TrendingUp className="h-4 w-4 text-purple-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-white mt-2">&lt; 24h</p>
-            <p className="text-[11px] text-purple-300 mt-1">Average time to resume habit</p>
-          </div>
+          <Card>
+            <CardBody className="p-4">
+              <div className="flex items-center justify-between text-muted text-xs">
+                <span>Recovery Velocity</span>
+                <TrendingUp className="h-4 w-4 text-maint" />
+              </div>
+              <p className="text-2xl font-bold font-mono text-ink mt-2">&lt; 24h</p>
+              <p className="text-[11px] text-maint-ink mt-1">Average time to resume habit</p>
+            </CardBody>
+          </Card>
         </div>
 
         {/* 60-Day Zero-Drop Habit Calendar Grid */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 backdrop-blur-xl space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-cyan-400" />
+        <Card>
+          <CardHeader
+            title={
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-accent" />
                 <span>60-Day Zero-Drop Habit Calendar</span>
-              </h2>
-              <p className="text-xs text-slate-400">
-                Hover over days to see how adaptive downscaling protected habit momentum during life setbacks.
-              </p>
-            </div>
+              </div>
+            }
+            description="Hover over days to see how adaptive downscaling protected habit momentum during life setbacks."
+            actions={
+              <div className="flex items-center gap-4 text-[11px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded bg-healthy"></span>
+                  <span className="text-ink-2">Kinetic Quest / Flow</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded bg-warning"></span>
+                  <span className="text-ink-2">Streak-Shield Reset</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded bg-surface-3"></span>
+                  <span className="text-muted">Rest</span>
+                </div>
+              </div>
+            }
+          />
 
-            {/* Legend */}
-            <div className="flex items-center gap-4 text-[11px]">
-              <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded bg-emerald-500/80"></span>
-                <span className="text-slate-300">Kinetic Quest / Flow</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded bg-amber-500/80"></span>
-                <span className="text-slate-300">Streak-Shield Reset</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded bg-slate-700"></span>
-                <span className="text-slate-400">Rest</span>
-              </div>
+          <CardBody>
+            <div className="grid grid-cols-6 sm:grid-cols-10 md:grid-cols-12 gap-2 pt-2">
+              {days.map((d) => (
+                <div
+                  key={d.day}
+                  title={`Day ${d.day} (${d.routine}) - Resting HRV: ${d.hrv}ms`}
+                  className={`group relative flex flex-col items-center justify-center rounded-lg p-2.5 transition border cursor-pointer ${
+                    d.status === "completed"
+                      ? "bg-healthy/12 border-healthy/35 text-healthy-ink hover:bg-healthy/20"
+                      : d.status === "shield"
+                      ? "bg-warning/15 border-warning/40 text-warning-ink hover:bg-warning/25 shadow-sm"
+                      : "bg-surface-2 border-line text-muted"
+                  }`}
+                >
+                  <span className="text-[10px] opacity-70">D{d.day}</span>
+                  {d.status === "shield" ? (
+                    <Shield className="h-3.5 w-3.5 text-warning my-0.5" />
+                  ) : d.status === "completed" ? (
+                    <CheckCircle2 className="h-3.5 w-3.5 text-healthy my-0.5" />
+                  ) : (
+                    <span className="h-3.5 w-3.5 my-0.5 text-center text-xs">•</span>
+                  )}
+                  <span className="text-[9px] font-mono">{d.hrv}ms</span>
+                </div>
+              ))}
             </div>
-          </div>
-
-          {/* Grid */}
-          <div className="grid grid-cols-6 sm:grid-cols-10 md:grid-cols-12 gap-2 pt-2">
-            {days.map((d) => (
-              <div
-                key={d.day}
-                title={`Day ${d.day} (${d.routine}) - Resting HRV: ${d.hrv}ms`}
-                className={`group relative flex flex-col items-center justify-center rounded-xl p-2.5 transition border cursor-pointer ${
-                  d.status === "completed"
-                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25"
-                    : d.status === "shield"
-                    ? "bg-amber-500/20 border-amber-500/40 text-amber-200 hover:bg-amber-500/30 shadow-sm shadow-amber-500/10"
-                    : "bg-slate-800/40 border-slate-700 text-slate-500"
-                }`}
-              >
-                <span className="text-[10px] opacity-70">D{d.day}</span>
-                {d.status === "shield" ? (
-                  <Shield className="h-4 w-4 text-amber-400 my-0.5" />
-                ) : d.status === "completed" ? (
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 my-0.5" />
-                ) : (
-                  <span className="h-4 w-4 my-0.5 text-center text-xs">•</span>
-                )}
-                <span className="text-[9px] font-mono">{d.hrv}ms</span>
-              </div>
-            ))}
-          </div>
-        </div>
+          </CardBody>
+        </Card>
 
         {/* Psychological Resilience Summary Banner */}
-        <div className="rounded-2xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/40 via-purple-950/30 to-slate-900/60 p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <Card className="border-accent/40 bg-accent-soft/30 p-5">
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 shrink-0">
-              <Award className="h-6 w-6" />
+            <div className="p-2 rounded-lg bg-accent/20 text-accent border border-accent/30 shrink-0">
+              <Award className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Why This Model Sustains Behavior</h3>
-              <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+              <h3 className="text-sm font-semibold text-ink">Why This Model Sustains Behavior</h3>
+              <p className="text-xs text-ink-2 mt-1 max-w-2xl leading-relaxed">
                 By cushioning 8 high-stress days with 2-minute Restorative Resets instead of binary streak failures, 
                 the user avoided the behavioral "What-the-Hell" collapse. Consistency was preserved with biological empathy.
               </p>
             </div>
           </div>
-        </div>
+        </Card>
       </main>
     </div>
   );
